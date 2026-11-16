@@ -1,5 +1,7 @@
 # dsh-simulink-mcp
 
+[![npm](https://img.shields.io/npm/v/dsh-simulink-mcp?color=0d7385)](https://www.npmjs.com/package/dsh-simulink-mcp)[![license](https://img.shields.io/badge/license-MIT-0d7385)](LICENSE)[![MATLAB](https://img.shields.io/badge/MATLAB-R2022b%2B-0d7385)]()
+
 DSH plugin that gives the agent — and the settings UI — control of a live
 Simulink session. It registers the MathWorks MCP server plus 32 Simulink tools
 (`mcp__simulink__sl_*`), ships its own runtime, installs four agent skills, and
