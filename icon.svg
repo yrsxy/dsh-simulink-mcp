@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Simulink model blocks">
+  <title>Simulink modeling tools</title>
+  <rect x="4" y="22" width="13" height="20" rx="3" fill="#2b7bb9"/>
+  <path d="M17 32h9" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <path d="M26 27.5 32 32l-6 4.5z" fill="#94a3b8"/>
+  <path d="M33 22 45 32 33 42z" fill="#d95319"/>
+  <path d="M45 32h4" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+  <rect x="49" y="18" width="11" height="28" rx="3" fill="none" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M51 38h3v-9h3v-5h3v9h2" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

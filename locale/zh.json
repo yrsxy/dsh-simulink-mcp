@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Simulink 建模工具",
+    "description": "连接 MATLAB，用 26 个结构化工具搭建、连线、仿真和检查 Simulink 模型，并支持模型结构图与信号曲线截图。"
+  }
+}

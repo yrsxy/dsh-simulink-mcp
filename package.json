@@ -1,0 +1,57 @@
+{
+  "name": "dsh-simulink-mcp",
+  "version": "1.6.0",
+  "type": "module",
+  "description": "Build, wire, compile and simulate Simulink models from DSH, on the MATLAB session you already have open.",
+  "license": "MIT",
+  "author": "yrsxy",
+  "homepage": "https://github.com/yrsxy/dsh-simulink-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yrsxy/dsh-simulink-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yrsxy/dsh-simulink-mcp/issues"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "simulink",
+    "matlab",
+    "mcp",
+    "control-systems",
+    "simulation",
+    "model-based-design"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "runtime",
+    "skills",
+    "assets",
+    "examples",
+    "screenshots.json",
+    "README.md",
+    "CHANGELOG.md",
+    "INSTALL-WINDOWS.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  }
+}

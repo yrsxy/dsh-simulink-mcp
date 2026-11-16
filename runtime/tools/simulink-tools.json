@@ -1,0 +1,1040 @@
+{
+  "tools": [
+    {
+      "name": "sl_env",
+      "title": "Session info",
+      "description": "Report which MATLAB/Simulink session is in use: version, working folder, whether the desktop is running, and which Simulink products are licensed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "\"full\" also lists every installed toolbox; \"\" returns a summary."
+          }
+        },
+        "required": [
+          "detail"
+        ]
+      }
+    },
+    {
+      "name": "sl_set_folder",
+      "title": "Change folder",
+      "description": "Change the MATLAB working folder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Absolute folder path that must already exist."
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      }
+    },
+    {
+      "name": "sl_new",
+      "title": "New model",
+      "description": "Create a new blank Simulink model.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Model name, used as the block path prefix (\"mymodel\")."
+          },
+          "save_path": {
+            "type": "string",
+            "description": "\"\" leaves the model unsaved; otherwise an .slx path to save it to."
+          }
+        },
+        "required": [
+          "name",
+          "save_path"
+        ]
+      }
+    },
+    {
+      "name": "sl_open",
+      "title": "Open model",
+      "description": "Load an existing .slx model from disk and report its top-level block count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Path to the .slx file."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      }
+    },
+    {
+      "name": "sl_save",
+      "title": "Save model",
+      "description": "Save a loaded model.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Loaded model name."
+          },
+          "save_path": {
+            "type": "string",
+            "description": "\"\" reuses the model's own file; otherwise an .slx path."
+          }
+        },
+        "required": [
+          "model",
+          "save_path"
+        ]
+      }
+    },
+    {
+      "name": "sl_close",
+      "title": "Close model",
+      "description": "Close a loaded model.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Loaded model name."
+          },
+          "do_save": {
+            "type": "boolean",
+            "description": "true saves before closing; false discards changes."
+          }
+        },
+        "required": [
+          "model",
+          "do_save"
+        ]
+      }
+    },
+    {
+      "name": "sl_list_models",
+      "title": "List loaded models",
+      "description": "List the models and libraries currently loaded in the session.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "\"\" for all, otherwise a regexp matched against names."
+          }
+        },
+        "required": [
+          "pattern"
+        ]
+      }
+    },
+    {
+      "name": "sl_blocks",
+      "title": "List blocks",
+      "description": "List blocks with their full paths and BlockTypes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model or subsystem path."
+          },
+          "depth": {
+            "type": "integer",
+            "description": "-1 for every level, 1 for top level only."
+          },
+          "type_filter": {
+            "type": "string",
+            "description": "\"\" for all, otherwise a BlockType such as \"Gain\" or \"Scope\"."
+          }
+        },
+        "required": [
+          "model",
+          "depth",
+          "type_filter"
+        ]
+      }
+    },
+    {
+      "name": "sl_ports",
+      "title": "Ports of a block",
+      "description": "Report a block's port counts per kind and which ports already have a line attached. Call this before wiring a multi-output block.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "block_path": {
+            "type": "string",
+            "description": "Full block path."
+          }
+        },
+        "required": [
+          "block_path"
+        ]
+      }
+    },
+    {
+      "name": "sl_lines",
+      "title": "List connections",
+      "description": "List every connection as source block and port to destination block and port.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model or subsystem path."
+          },
+          "depth": {
+            "type": "integer",
+            "description": "-1 for every level, otherwise SearchDepth."
+          }
+        },
+        "required": [
+          "model",
+          "depth"
+        ]
+      }
+    },
+    {
+      "name": "sl_trace",
+      "title": "Trace signal chain",
+      "description": "Follow the signal into or out of one block, returning the blocks, the port-to-port edges and one line per hop. Use it to read a large model one path at a time instead of listing every line.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name."
+          },
+          "block": {
+            "type": "string",
+            "description": "Block to start from: full path or a name relative to the model."
+          },
+          "direction": {
+            "type": "string",
+            "description": "\"upstream\" (where its input comes from) or \"downstream\" (where its output goes); \"\" means upstream."
+          },
+          "depth": {
+            "type": "integer",
+            "description": "How many hops to follow; <=0 means 3."
+          }
+        },
+        "required": [
+          "model",
+          "block",
+          "direction",
+          "depth"
+        ]
+      }
+    },
+    {
+      "name": "sl_block_params",
+      "title": "Block parameters",
+      "description": "Read a block's dialog parameters with their current values.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "block_path": {
+            "type": "string",
+            "description": "Full block path."
+          },
+          "filter": {
+            "type": "string",
+            "description": "\"\" for all parameters, otherwise a regexp on parameter names."
+          }
+        },
+        "required": [
+          "block_path",
+          "filter"
+        ]
+      }
+    },
+    {
+      "name": "sl_lib_search",
+      "title": "Search block library",
+      "description": "Search the built-in Simulink library for block paths. Use this instead of guessing a library path for sl_add_block.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Substring or regexp matched against library block paths, e.g. \"Gain\" or \"PID\"."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum paths returned; 0 means 50."
+          }
+        },
+        "required": [
+          "query",
+          "limit"
+        ]
+      }
+    },
+    {
+      "name": "sl_add_block",
+      "title": "Add block",
+      "description": "Add a library block to a model. Get the library path from sl_lib_search rather than inventing one.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Library path, e.g. \"simulink/Math Operations/Gain\"."
+          },
+          "destination": {
+            "type": "string",
+            "description": "Target path in the model, e.g. \"mymodel/Gain1\"."
+          },
+          "position": {
+            "type": "string",
+            "description": "\"left top right bottom\" in pixels, or \"\" to place it at the right edge."
+          }
+        },
+        "required": [
+          "source",
+          "destination",
+          "position"
+        ]
+      }
+    },
+    {
+      "name": "sl_add_line",
+      "title": "Connect ports",
+      "description": "Wire one output port to one input port.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name."
+          },
+          "src_block": {
+            "type": "string",
+            "description": "Source block path relative to the model, e.g. \"Step\"."
+          },
+          "src_port": {
+            "type": "integer",
+            "description": "Source output port number, 1-based."
+          },
+          "dst_block": {
+            "type": "string",
+            "description": "Destination block path relative to the model, e.g. \"Gain\"."
+          },
+          "dst_port": {
+            "type": "integer",
+            "description": "Destination input port number, 1-based."
+          }
+        },
+        "required": [
+          "model",
+          "src_block",
+          "src_port",
+          "dst_block",
+          "dst_port"
+        ]
+      }
+    },
+    {
+      "name": "sl_delete",
+      "title": "Delete block or close model",
+      "description": "Delete a block together with its connected lines. If given a loaded model name, closes that model instead.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Full block path, or a loaded model name."
+          }
+        },
+        "required": [
+          "target"
+        ]
+      }
+    },
+    {
+      "name": "sl_delete_line",
+      "title": "Disconnect ports",
+      "description": "Remove the connection between two ports.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name."
+          },
+          "src_block": {
+            "type": "string",
+            "description": "Source block path relative to the model."
+          },
+          "src_port": {
+            "type": "integer",
+            "description": "Source output port number, 1-based."
+          },
+          "dst_block": {
+            "type": "string",
+            "description": "Destination block path relative to the model."
+          },
+          "dst_port": {
+            "type": "integer",
+            "description": "Destination input port number, 1-based."
+          }
+        },
+        "required": [
+          "model",
+          "src_block",
+          "src_port",
+          "dst_block",
+          "dst_port"
+        ]
+      }
+    },
+    {
+      "name": "sl_set_param",
+      "title": "Set parameter",
+      "description": "Set a parameter on a block or on a model (solver, StopTime, ...) and report the previous value.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Block path or loaded model name."
+          },
+          "param": {
+            "type": "string",
+            "description": "Parameter name, e.g. \"Gain\" or \"StopTime\"."
+          },
+          "value": {
+            "type": "string",
+            "description": "New value as text, e.g. \"2.5\" or \"[1 2]\"."
+          }
+        },
+        "required": [
+          "target",
+          "param",
+          "value"
+        ]
+      }
+    },
+    {
+      "name": "sl_layout",
+      "title": "Auto layout",
+      "description": "Re-position every block into a flow layout ordered by signal direction. Use it after adding blocks, which otherwise pile up at the origin.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name."
+          },
+          "direction": {
+            "type": "string",
+            "description": "\"right\" or \"down\"; \"\" means right."
+          },
+          "spacing": {
+            "type": "integer",
+            "description": "Pixels between columns; <=0 means 60."
+          }
+        },
+        "required": [
+          "model",
+          "direction",
+          "spacing"
+        ]
+      }
+    },
+    {
+      "name": "sl_update",
+      "title": "Compile check",
+      "description": "Compile the model (Update Diagram) to surface wiring, port, data-type and solver errors without running a simulation. On failure it also reports the blocks named in the diagnostic and a hint for the next call.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name."
+          }
+        },
+        "required": [
+          "model"
+        ]
+      }
+    },
+    {
+      "name": "sl_last_error",
+      "title": "Last MATLAB error",
+      "description": "Return the last uncaught MATLAB error with its message and stack.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clear_flag": {
+            "type": "boolean",
+            "description": "true also clears the recorded error."
+          }
+        },
+        "required": [
+          "clear_flag"
+        ]
+      }
+    },
+    {
+      "name": "sl_sim",
+      "title": "Run simulation",
+      "description": "Simulate the model and summarise the result. The SimulationOutput stays in the base workspace as simOut for sl_sim_data and sl_plot.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name."
+          },
+          "stop_time": {
+            "type": "string",
+            "description": "\"\" keeps the model value; otherwise a number of seconds such as \"10\"."
+          },
+          "solver": {
+            "type": "string",
+            "description": "\"\" keeps the model value; otherwise a solver such as \"ode45\"."
+          }
+        },
+        "required": [
+          "model",
+          "stop_time",
+          "solver"
+        ]
+      }
+    },
+    {
+      "name": "sl_sim_data",
+      "title": "Read simulation data",
+      "description": "Read a field of the last simOut as JSON arrays, downsampled to keep the payload small.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable": {
+            "type": "string",
+            "description": "Plain identifier, e.g. \"yout\" or \"tout\" or a logged signal name."
+          },
+          "max_points": {
+            "type": "integer",
+            "description": "Maximum samples returned; <=0 means 500."
+          }
+        },
+        "required": [
+          "variable",
+          "max_points"
+        ]
+      }
+    },
+    {
+      "name": "sl_metrics",
+      "title": "Signal metrics",
+      "description": "Characterise the last simulated signal: steady state, overshoot, rise time, settling time and steady-state error against a reference. Saves reading numbers off a plot by eye.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "variable": {
+            "type": "string",
+            "description": "Field of simOut such as \"yout\" or \"yout{2}\"; \"\" uses the first output."
+          },
+          "reference": {
+            "type": "string",
+            "description": "The value the signal should settle at, as text, so a steady-state error can be computed; \"\" skips that comparison."
+          },
+          "band_percent": {
+            "type": "integer",
+            "description": "Settling-time band as a percentage of the step size; <=0 means 2."
+          }
+        },
+        "required": [
+          "variable",
+          "reference",
+          "band_percent"
+        ]
+      }
+    },
+    {
+      "name": "sl_snapshot",
+      "title": "Model diagram PNG",
+      "description": "Export the model diagram itself to a PNG so the built model can be looked at.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name."
+          },
+          "out_path": {
+            "type": "string",
+            "description": "\"\" writes to the MATLAB temp folder; otherwise a .png path."
+          },
+          "dpi": {
+            "type": "integer",
+            "description": "Resolution; <=0 means 150."
+          }
+        },
+        "required": [
+          "model",
+          "out_path",
+          "dpi"
+        ]
+      }
+    },
+    {
+      "name": "sl_plot",
+      "title": "Plot signal PNG",
+      "description": "Plot a simulated signal to a PNG.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "signal": {
+            "type": "string",
+            "description": "Field of simOut, e.g. \"yout\" or a logged signal name."
+          },
+          "out_path": {
+            "type": "string",
+            "description": "\"\" writes to the MATLAB temp folder; otherwise a .png path."
+          }
+        },
+        "required": [
+          "signal",
+          "out_path"
+        ]
+      }
+    },
+    {
+      "name": "sl_show",
+      "title": "Show model window",
+      "description": "Open the model in the Simulink editor so it is visible on screen while it is being built.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Loaded model name."
+          }
+        },
+        "required": [
+          "model"
+        ]
+      }
+    },
+    {
+      "name": "sl_highlight",
+      "title": "Highlight block",
+      "description": "Mark one block in red in the Simulink editor so the next sl_snapshot shows where to look. An empty block clears every mark in the model.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Loaded model name."
+          },
+          "block": {
+            "type": "string",
+            "description": "Full block path or a name relative to the model; \"\" clears all marks."
+          }
+        },
+        "required": [
+          "model",
+          "block"
+        ]
+      }
+    },
+    {
+      "name": "sl_cleanup",
+      "title": "Remove dangling lines",
+      "description": "Delete orphaned line segments left behind by block deletion, which otherwise keep a port occupied and break the next connection.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Loaded model name."
+          }
+        },
+        "required": [
+          "model"
+        ]
+      }
+    },
+    {
+      "name": "sl_selftest",
+      "title": "Self-test",
+      "description": "Prove the toolchain works end to end in a throwaway model: engine, library paths, block creation, wiring, compile, simulate, read data, metrics, snapshot, save and error reporting. Leaves nothing behind.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "folder": {
+            "type": "string",
+            "description": "Scratch folder for the test model and PNG; \"\" uses the MATLAB temp folder."
+          }
+        },
+        "required": [
+          "folder"
+        ]
+      }
+    },
+    {
+      "name": "sl_subsystem",
+      "title": "Group into subsystem",
+      "description": "Group blocks into a subsystem, or expand one back. Use it when a diagram has grown unreadable or when a repeated motif should become one block. Simulink creates the ports it needs and keeps the inner wiring; pass several blocks at once and they become one subsystem.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Loaded model name."
+          },
+          "blocks": {
+            "type": "string",
+            "description": "Comma-separated block paths, model-relative (\"Gain1\") or full. For mode \"expand\" pass exactly one subsystem path."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name for the new subsystem; \"\" keeps the generated one."
+          },
+          "mode": {
+            "type": "string",
+            "description": "\"group\" (default) packs the blocks; \"expand\" pulls a subsystem's contents back to the top level."
+          }
+        },
+        "required": [
+          "model",
+          "blocks",
+          "name",
+          "mode"
+        ]
+      }
+    },
+    {
+      "name": "sl_build",
+      "title": "Build from spec",
+      "description": "Create or extend a model from a JSON spec: blocks (library path or plain type), their parameters, positions and connections. Missing blocks are added, existing ones keep their place and get their parameters updated, so rerunning the same spec is safe. Prefer this over many sl_add_block calls when building more than a few blocks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name; created when it is neither loaded nor on disk."
+          },
+          "spec": {
+            "type": "string",
+            "description": "Path to a .json spec file, or the JSON text itself: {\"params\":{...},\"blocks\":[{\"name\":\"ref\",\"type\":\"Step\",\"params\":{\"Time\":\"0\"},\"pos\":[30,40,70,80]}],\"lines\":[{\"from\":\"ref/1\",\"to\":\"gain/1\"}]}. \"lib\" may replace \"type\" for an exact library path."
+          },
+          "layout": {
+            "type": "string",
+            "description": "\"true\" re-lays the diagram out afterwards; \"\" or \"false\" keeps the spec positions."
+          }
+        },
+        "required": [
+          "model",
+          "spec",
+          "layout"
+        ]
+      }
+    }
+  ],
+  "signatures": {
+    "sl_env": {
+      "function": "sl_env",
+      "input": {
+        "order": [
+          "detail"
+        ]
+      }
+    },
+    "sl_set_folder": {
+      "function": "sl_set_folder",
+      "input": {
+        "order": [
+          "folder"
+        ]
+      }
+    },
+    "sl_new": {
+      "function": "sl_new",
+      "input": {
+        "order": [
+          "name",
+          "save_path"
+        ]
+      }
+    },
+    "sl_open": {
+      "function": "sl_open",
+      "input": {
+        "order": [
+          "path"
+        ]
+      }
+    },
+    "sl_save": {
+      "function": "sl_save",
+      "input": {
+        "order": [
+          "model",
+          "save_path"
+        ]
+      }
+    },
+    "sl_close": {
+      "function": "sl_close",
+      "input": {
+        "order": [
+          "model",
+          "do_save"
+        ]
+      }
+    },
+    "sl_list_models": {
+      "function": "sl_list_models",
+      "input": {
+        "order": [
+          "pattern"
+        ]
+      }
+    },
+    "sl_blocks": {
+      "function": "sl_blocks",
+      "input": {
+        "order": [
+          "model",
+          "depth",
+          "type_filter"
+        ]
+      }
+    },
+    "sl_ports": {
+      "function": "sl_ports",
+      "input": {
+        "order": [
+          "block_path"
+        ]
+      }
+    },
+    "sl_lines": {
+      "function": "sl_lines",
+      "input": {
+        "order": [
+          "model",
+          "depth"
+        ]
+      }
+    },
+    "sl_block_params": {
+      "function": "sl_block_params",
+      "input": {
+        "order": [
+          "block_path",
+          "filter"
+        ]
+      }
+    },
+    "sl_lib_search": {
+      "function": "sl_lib_search",
+      "input": {
+        "order": [
+          "query",
+          "limit"
+        ]
+      }
+    },
+    "sl_add_block": {
+      "function": "sl_add_block",
+      "input": {
+        "order": [
+          "source",
+          "destination",
+          "position"
+        ]
+      }
+    },
+    "sl_add_line": {
+      "function": "sl_add_line",
+      "input": {
+        "order": [
+          "model",
+          "src_block",
+          "src_port",
+          "dst_block",
+          "dst_port"
+        ]
+      }
+    },
+    "sl_delete": {
+      "function": "sl_delete",
+      "input": {
+        "order": [
+          "target"
+        ]
+      }
+    },
+    "sl_delete_line": {
+      "function": "sl_delete_line",
+      "input": {
+        "order": [
+          "model",
+          "src_block",
+          "src_port",
+          "dst_block",
+          "dst_port"
+        ]
+      }
+    },
+    "sl_set_param": {
+      "function": "sl_set_param",
+      "input": {
+        "order": [
+          "target",
+          "param",
+          "value"
+        ]
+      }
+    },
+    "sl_layout": {
+      "function": "sl_layout",
+      "input": {
+        "order": [
+          "model",
+          "direction",
+          "spacing"
+        ]
+      }
+    },
+    "sl_update": {
+      "function": "sl_update",
+      "input": {
+        "order": [
+          "model"
+        ]
+      }
+    },
+    "sl_last_error": {
+      "function": "sl_last_error",
+      "input": {
+        "order": [
+          "clear_flag"
+        ]
+      }
+    },
+    "sl_sim": {
+      "function": "sl_sim",
+      "input": {
+        "order": [
+          "model",
+          "stop_time",
+          "solver"
+        ]
+      }
+    },
+    "sl_sim_data": {
+      "function": "sl_sim_data",
+      "input": {
+        "order": [
+          "variable",
+          "max_points"
+        ]
+      }
+    },
+    "sl_snapshot": {
+      "function": "sl_snapshot",
+      "input": {
+        "order": [
+          "model",
+          "out_path",
+          "dpi"
+        ]
+      }
+    },
+    "sl_plot": {
+      "function": "sl_plot",
+      "input": {
+        "order": [
+          "signal",
+          "out_path"
+        ]
+      }
+    },
+    "sl_show": {
+      "function": "sl_show",
+      "input": {
+        "order": [
+          "model"
+        ]
+      }
+    },
+    "sl_cleanup": {
+      "function": "sl_cleanup",
+      "input": {
+        "order": [
+          "model"
+        ]
+      }
+    },
+    "sl_highlight": {
+      "function": "sl_highlight",
+      "input": {
+        "order": [
+          "model",
+          "block"
+        ]
+      }
+    },
+    "sl_trace": {
+      "function": "sl_trace",
+      "input": {
+        "order": [
+          "model",
+          "block",
+          "direction",
+          "depth"
+        ]
+      }
+    },
+    "sl_metrics": {
+      "function": "sl_metrics",
+      "input": {
+        "order": [
+          "variable",
+          "reference",
+          "band_percent"
+        ]
+      }
+    },
+    "sl_selftest": {
+      "function": "sl_selftest",
+      "input": {
+        "order": [
+          "folder"
+        ]
+      }
+    },
+    "sl_subsystem": {
+      "function": "sl_subsystem",
+      "input": {
+        "order": [
+          "model",
+          "blocks",
+          "name",
+          "mode"
+        ]
+      }
+    },
+    "sl_build": {
+      "function": "sl_build",
+      "input": {
+        "order": [
+          "model",
+          "spec",
+          "layout"
+        ]
+      }
+    }
+  }
+}

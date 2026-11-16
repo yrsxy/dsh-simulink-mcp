@@ -1,0 +1,11 @@
+{
+  "screenshots": [
+    "assets/screenshots/00-hero.png",
+    "assets/screenshots/01-servo-model.png",
+    "assets/screenshots/02-plant-inside.png",
+    "assets/screenshots/03-step-response.png",
+    "assets/screenshots/04-diagnose-block.png",
+    "assets/screenshots/05-gain-sweep.png",
+    "assets/screenshots/06-trade-off.png"
+  ]
+}

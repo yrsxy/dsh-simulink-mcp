@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Simulink modeling tools",
+    "description": "Connects MATLAB to build, wire, simulate, and inspect Simulink models through 26 structured tools, including model-diagram and signal snapshots."
+  }
+}

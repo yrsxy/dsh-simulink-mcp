@@ -1,0 +1,33 @@
+# Simulink bundle: one Host/Client plugin row plus the MathWorks MCP server row.
+#
+# Row 1 mirrors the runtime shipped in ./runtime to $DSH_HOME/simulink-mcp/runtime,
+# installs the bundled skills, and serves the settings panel. It runs first so the
+# mirrored paths exist before row 2 spawns.
+#
+# Row 2 runs ./runtime/launcher.cjs, which picks the server binary for this
+# platform and wires in the tool manifest, the log folder and the MATLAB it found.
+# The launcher runs on the app's own Node (ELECTRON_RUN_AS_NODE), so this row
+# needs no absolute path of any kind and is identical on macOS and Windows.
+#
+# --matlab-session-mode=auto attaches to the desktop MATLAB that
+# ~/Documents/MATLAB/startup.m has shared, and starts one when none is running.
+- insert:
+    - id: simulink-bundle
+      name: "dsh-simulink-mcp"
+      config: {}
+
+    - id: mcp-simulink
+      name: "@deepseek-ai/dsh-mcp-client"
+      config:
+        serverName: simulink
+        transport: stdio
+        command: !!js process.execPath
+        args:
+          - !!js dshHomePath('simulink-mcp', 'runtime', 'launcher.cjs')
+          - --matlab-session-mode=auto
+          - --log-level=info
+          - --disable-telemetry=true
+        env:
+          ELECTRON_RUN_AS_NODE: "1"
+        toolCallTimeoutMs: 600000
+        failOnStartupError: false
