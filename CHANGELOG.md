@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.6.1
+
+The package was renamed from the local `@local/dsh-simulink-mcp` to
+`dsh-simulink-mcp` for the npm release, but two places still carried the old
+name and the app refused to boot the web UI:
+
+- `client.js` registered its factory under `@local/dsh-simulink-mcp`. With the
+  old link still present in the profile's `node_modules`, the loader saw the same
+  bundle twice and aborted with `duplicate factory registration`, which surfaced
+  as `web boot: 1 entry did not activate`.
+- the skill marker file `.installed-by` still said `@local/…`, so uninstalling
+  the plugin would have left the four skills behind. The marker now records the
+  real package name and both spellings are accepted when cleaning up.
+
+
 ## 1.5.2
 
 Two build-path improvements found while shooting the demo material for the plugin market:

@@ -130,6 +130,10 @@ function syncRuntime() {
   return true
 }
 
+const PKG_NAME = 'dsh-simulink-mcp'
+/** Names this package shipped under before it went to npm; accept both markers. */
+const LEGACY_NAMES = [PKG_NAME, '@local/dsh-simulink-mcp']
+
 /** Copy the bundled skills into the Harness skill directory.
  *
  * A bundle reload disposes the previous instance (removeSkills) around the same
@@ -150,7 +154,7 @@ function installSkills() {
       try {
         mkdirSync(to, { recursive: true })
         cpSync(from, to, { recursive: true })
-        writeFileSync(join(to, '.installed-by'), '@local/dsh-simulink-mcp')
+        writeFileSync(join(to, '.installed-by'), PKG_NAME)
         break
       } catch (error) {
         if (error.code !== 'EPERM' || attempt >= 4) throw error
@@ -167,7 +171,8 @@ function removeSkills() {
   for (const entry of readdirSync(skillsTarget, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue
     const marker = join(skillsTarget, entry.name, '.installed-by')
-    if (existsSync(marker) && readFileSync(marker, 'utf8').trim() === '@local/dsh-simulink-mcp')
+    const owner = existsSync(marker) ? readFileSync(marker, 'utf8').trim() : ''
+    if (LEGACY_NAMES.includes(owner))
       rmSync(join(skillsTarget, entry.name), { recursive: true, force: true })
   }
 }

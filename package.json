@@ -1,6 +1,6 @@
 {
   "name": "dsh-simulink-mcp",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "type": "module",
   "description": "Build, wire, compile and simulate Simulink models from DSH, on the MATLAB session you already have open.",
   "license": "MIT",

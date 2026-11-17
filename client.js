@@ -6,7 +6,7 @@
  * session the agent uses instead of opening a second MATLAB connection.
  */
 window.__ModuleLoader__.load({
-  id: '@local/dsh-simulink-mcp',
+  id: 'dsh-simulink-mcp',
   factory(require) {
     const React = require('react')
 
