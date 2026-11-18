@@ -93,6 +93,11 @@ the path suffix, so it works whether or not the host strips the prefix):
   for diagnosing a tool-payload change without guessing
 - `POST /act` — `{action: "show" | "open" | "env", model?, path?}`
 
+Every route asks the host's `connection.requestRejection(req)` first and answers
+401/403 before touching MATLAB, so a page in another browser tab cannot drive
+the session. On a host without that service the plugin falls back to its own
+check (loopback Host, Origin must match) — narrower, but still closed.
+
 ## Troubleshooting
 
 - **Panel shows nothing after install** — the client half loads with the page.

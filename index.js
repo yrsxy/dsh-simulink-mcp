@@ -395,6 +395,51 @@ export function apply(ctx) {
     return value
   }
 
+  /**
+   * The host's own request fence: its Host/Origin check (DNS rebinding,
+   * cross-site calls) plus its browser login cookie. Read per request, because
+   * the service may mount after this plugin does.
+   *
+   * A fence that throws must not become an open door, and a host that has no
+   * fence at all must not leave these routes world-readable from any page in
+   * the browser — so both paths end in a rejection rather than a pass.
+   */
+  function requestRejection(req) {
+    let connection
+    try {
+      connection = ctx.get('connection')
+    } catch {
+      connection = undefined
+    }
+    const gate = connection?.requestRejection
+    if (typeof gate === 'function') {
+      try {
+        const rejection = gate.call(connection, req)
+        if (rejection === undefined || rejection === null || rejection === false) return undefined
+        return typeof rejection === 'number' ? rejection : 403
+      } catch {
+        return 403
+      }
+    }
+    return loopbackRejection(req)
+  }
+
+  /** Local stand-in for the fence, used only when the host has none. */
+  function loopbackRejection(req) {
+    const host = String(req.headers?.host ?? '').toLowerCase()
+    const name = host.replace(/:\d+$/, '')
+    const loopback = name === 'localhost' || name === '::1' || name === '[::1]'
+      || /^127\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.test(name)
+    if (!loopback) return 403
+    const origin = req.headers?.origin
+    if (origin === undefined) return undefined
+    try {
+      return new URL(origin).host.toLowerCase() === host ? undefined : 403
+    } catch {
+      return 403
+    }
+  }
+
   function reply(res, status, body, type = 'application/json; charset=utf-8') {
     const payload = typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body)
     res.writeHead(status, { 'content-type': type, 'cache-control': 'no-store' })
@@ -405,6 +450,16 @@ export function apply(ctx) {
     kind: 'prefix',
     path: routePath,
     handler: async (req, res) => {
+      // Fence first: these routes drive MATLAB, so an unauthenticated browser
+      // page must not reach them at all.
+      const rejection = requestRejection(req)
+      if (rejection !== undefined) {
+        reply(res, rejection, {
+          ok: false,
+          error: rejection === 401 ? 'unauthorized' : 'forbidden',
+        })
+        return
+      }
       const url = new URL(req.url ?? '/', 'http://localhost')
       // Whether or not the host strips the prefix before dispatch, dispatch on
       // the suffix so both shapes resolve to the same route.

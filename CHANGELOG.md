@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.6.2
+
+Security fix, reported by the plugin-market reviewer while reviewing the entry.
+
+The four HTTP routes this plugin registers on the host (`/status`, `/snapshot`,
+`/act`, `/debug`) were reachable by any page open in the browser: they answered
+whoever asked, with no Host/Origin fence and no login check. They drive a real
+MATLAB session, so that was a genuine hole.
+
+Every route now asks the host first:
+
+```js
+const rejection = ctx.get('connection').requestRejection(req)
+if (rejection !== undefined) { /* 401 or 403 */ }
+```
+
+Exit paths and why they are fail-closed:
+
+- the fence returns a status → answered with 401 `unauthorized` or 403
+  `forbidden`, before any MATLAB work.
+- the fence throws → treated as 403. A fence that breaks is not a pass.
+- the host has no `connection` service at all (older DSH) → a local stand-in
+  checks that Host is a loopback authority and, when an Origin is present, that
+  it matches Host. Narrower than the host fence, but still closed to another
+  page.
+
+
 ## 1.6.1
 
 The package was renamed from the local `@local/dsh-simulink-mcp` to
